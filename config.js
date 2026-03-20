@@ -11,7 +11,7 @@ window.SITE_CONFIG = {
 
   /* Kontakt */
   contactEmail:  "aiquickstart@int.pl",
-  siteUrl:       "https://domena.pl",
+  siteUrl:       "https://aiquickstart.github.io/START/",
 
   /* Produkt */
   productName:   "AI Quick Start",
