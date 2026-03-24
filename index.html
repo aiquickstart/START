@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-<title>Twój Pierwszy Asystent AI — Zaoszczędź 2h Dziennie</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="tailwind.config.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon"       type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon"            href="favicon.png">
+  <title>Twój Pierwszy Asystent AI — Zaoszczędź 2h Dziennie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind config musi być wczytany przed DOMContentLoaded — bez defer -->
+  <script src="tailwind.config.js"></script>
+  <!-- Reszta skryptów z defer — wykonują się po sparsowaniu HTML -->
+  <script src="config.js" defer></script>
+  <script src="main.js"   defer></script>
 </head>
 <body class="bg-bg text-snow font-sans overflow-x-hidden">
 
@@ -29,7 +33,7 @@
   </div>
   <div id="mobile-menu" class="sm:hidden max-h-0 opacity-0 overflow-hidden bg-surface border-t border-border">
     <div class="px-4 py-6 flex flex-col gap-4">
-      <a href="#kup" class="buy-link block bg-accent text-black font-bold text-sm tracking-widest uppercase px-6 py-4 text-center hover:bg-white transition-colors">Kup teraz — 39 zł</a>
+      <a href="#kup"       class="buy-link block bg-accent text-black font-bold text-sm tracking-widest uppercase px-6 py-4 text-center hover:bg-white transition-colors">Kup teraz — 39 zł</a>
       <a href="#kup"       class="text-muted text-sm text-center hover:text-snow transition-colors">Co dostajesz?</a>
       <a href="#gwarancja" class="text-muted text-sm text-center hover:text-snow transition-colors">Gwarancja</a>
     </div>
@@ -279,12 +283,13 @@
       <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>PDF dostępny od razu po zakupie</li>
       <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>Dożywotni dostęp + przyszłe aktualizacje</li>
     </ul>
+
     <!-- Countdown -->
     <div class="mb-6 sm:mb-8 border border-danger/30 bg-danger/5 p-3 sm:p-4">
       <div class="text-[10px] sm:text-xs font-semibold tracking-[2px] uppercase text-danger mb-2 text-center">🔥 Cena premierowa kończy się za</div>
       <div class="flex items-center justify-center gap-2 sm:gap-3">
         <div class="text-center">
-          <div id="cd-hours" class="font-display text-snow text-3xl sm:text-4xl leading-none">00</div>
+          <div id="cd-hours"   class="font-display text-snow text-3xl sm:text-4xl leading-none">00</div>
           <div class="text-[9px] sm:text-[10px] text-muted uppercase tracking-wider mt-1">godz</div>
         </div>
         <div class="font-display text-accent text-2xl sm:text-3xl leading-none mb-3">:</div>
@@ -422,102 +427,5 @@
   </a>
 </div>
 
-<!-- CONFIG + page JS -->
-<script src="config.js"></script>
-<script>
-  // Nav scroll
-  const nav = document.getElementById("nav");
-  window.addEventListener("scroll", () => {
-    const s = window.scrollY > 40;
-    nav.style.background     = s ? "rgba(10,10,10,0.96)" : "";
-    nav.style.backdropFilter = s ? "blur(14px)" : "";
-    nav.style.borderColor    = s ? "#222" : "transparent";
-  }, { passive: true });
-
-  // Mobile menu
-  const hamburger  = document.getElementById("hamburger");
-  const mobileMenu = document.getElementById("mobile-menu");
-  let menuOpen = false;
-  hamburger.addEventListener("click", () => {
-    menuOpen = !menuOpen;
-    mobileMenu.style.maxHeight = menuOpen ? mobileMenu.scrollHeight + "px" : "0";
-    mobileMenu.style.opacity   = menuOpen ? "1" : "0";
-    const lines = hamburger.querySelectorAll(".ham-line");
-    lines[0].style.transform = menuOpen ? "translateY(8px) rotate(45deg)"  : "";
-    lines[1].style.opacity   = menuOpen ? "0" : "";
-    lines[2].style.transform = menuOpen ? "translateY(-8px) rotate(-45deg)" : "";
-  });
-  mobileMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
-    menuOpen = false;
-    mobileMenu.style.maxHeight = "0";
-    mobileMenu.style.opacity   = "0";
-    hamburger.querySelectorAll(".ham-line").forEach(l => { l.style.transform = ""; l.style.opacity = ""; });
-  }));
-
-  // Scroll reveal
-  const io = new IntersectionObserver(
-    es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); io.unobserve(e.target); } }),
-    { threshold: 0.08 }
-  );
-  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
-
-  // FAQ accordion
-  document.querySelectorAll(".faq-item").forEach(item => {
-    item.querySelector(".faq-q").addEventListener("click", () => {
-      const open = item.dataset.open === "1";
-      document.querySelectorAll(".faq-item").forEach(i => {
-        i.dataset.open = "0";
-        i.querySelector(".faq-a").style.maxHeight = "0";
-        const t = i.querySelector(".faq-toggle");
-        t.textContent = "+"; t.style.cssText = "";
-      });
-      if (!open) {
-        item.dataset.open = "1";
-        item.querySelector(".faq-a").style.maxHeight = item.querySelector(".faq-a").scrollHeight + "px";
-        const t = item.querySelector(".faq-toggle");
-        t.textContent = "−"; t.style.background = "#d4ff00"; t.style.color = "#000"; t.style.borderColor = "#d4ff00";
-      }
-    });
-  });
-
-  // ── Countdown timer (24h, resets on expiry) ──────────────────
-  const CD_KEY = "aqs_cd_end";
-  const CD_HOURS = 75; // ile godzin trwa oferta
-  function getEnd() {
-    let end = parseInt(localStorage.getItem(CD_KEY) || "0", 10);
-    if (!end || end < Date.now()) {
-      end = Date.now() + CD_HOURS * 60 * 60 * 1000;
-      localStorage.setItem(CD_KEY, end);
-    }
-    return end;
-  }
-  function pad(n) { return String(n).padStart(2, "0"); }
-  function tickCountdown() {
-    const diff = Math.max(0, getEnd() - Date.now());
-    const h = Math.floor(diff / 3_600_000);
-    const m = Math.floor((diff % 3_600_000) / 60_000);
-    const s = Math.floor((diff % 60_000) / 1_000);
-    document.getElementById("cd-hours").textContent   = pad(h);
-    document.getElementById("cd-minutes").textContent = pad(m);
-    document.getElementById("cd-seconds").textContent = pad(s);
-  }
-  tickCountdown();
-  setInterval(tickCountdown, 1000);
-
-  // ── Sticky mobile CTA — show after hero scrolled past ────────
-  const stickyCta  = document.getElementById("sticky-cta");
-  const heroSection = document.querySelector("section");
-  const stickyObs = new IntersectionObserver(
-    ([entry]) => {
-      if (!entry.isIntersecting) {
-        stickyCta.style.transform = "translateY(0)";
-      } else {
-        stickyCta.style.transform = "translateY(100%)";
-      }
-    },
-    { threshold: 0.1 }
-  );
-  stickyObs.observe(heroSection);
-</script>
 </body>
 </html>
